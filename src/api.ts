@@ -63,7 +63,7 @@ export const fetchDetailedProducts = async (ids: string[]) => {
   return result;
 };
 
-export const filterProducts = async (filter: string) => {
+export const filterProducts = async (filters: { [key: string]: any }) => {
   const authHeader = generateAuthHeader();
   const requestOptions: RequestInit = {
     method: 'POST',
@@ -73,10 +73,23 @@ export const filterProducts = async (filter: string) => {
     },
     body: JSON.stringify({
       action: 'filter',
-      params: { product: filter },
+      params: filters,
     }),
   };
 
   const response = await fetch(API_URL, requestOptions);
   return handleResponse(response);
 };
+
+filterProducts({ brand: 'Baraka' }).then(async (result) => {
+  console.log(result);
+  try {
+    const detailedProducts = await fetchDetailedProducts(result.result);
+    console.log(detailedProducts);
+  } catch (error) {
+    console.error(
+      'Ошибка при получении детальной информации о продуктах:',
+      error
+    );
+  }
+});

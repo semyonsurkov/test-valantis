@@ -1,4 +1,3 @@
-// App.tsx
 import React, { useState } from 'react';
 import ProductList from './components/ProductList';
 import Filter from './components/Filter';

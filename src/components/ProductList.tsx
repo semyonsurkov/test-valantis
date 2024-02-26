@@ -19,7 +19,7 @@ const ProductList: React.FC<ProductListProps> = ({
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    const fetchProductsData = async () => {
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
@@ -34,19 +34,30 @@ const ProductList: React.FC<ProductListProps> = ({
           const detailedData = await fetchDetailedProducts(
             currentPageData.result
           );
-          setProducts(detailedData);
+
+          const uniqueProducts = detailedData.filter(
+            (product, index, self) =>
+              index === self.findIndex((p) => p.id === product.id)
+          );
+
+          setProducts(uniqueProducts);
         } else {
           setProducts([]);
         }
       } catch (error) {
         console.error('Error fetching products:', error);
+        if (error.message === 'HTTP error! status: 500') {
+          console.log('Retrying request...');
+          fetchData();
+          return;
+        }
         setError('Failed to fetch products. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProductsData();
+    fetchData();
   }, [filter, currentPage]);
 
   const handlePageChange = (page: number) => {

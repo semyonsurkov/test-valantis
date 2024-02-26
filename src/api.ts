@@ -77,19 +77,20 @@ export const filterProducts = async (filters: { [key: string]: any }) => {
     }),
   };
 
-  const response = await fetch(API_URL, requestOptions);
-  return handleResponse(response);
+  try {
+    const response = await fetch(API_URL, requestOptions);
+    const filteredProducts = await handleResponse(response);
+
+    const detailedProducts = await fetchDetailedProducts(
+      filteredProducts.result
+    );
+
+    return detailedProducts;
+  } catch (error) {
+    throw new Error('Ошибка при фильтрации продуктов: ' + error.message);
+  }
 };
 
-filterProducts({ brand: 'Baraka' }).then(async (result) => {
+filterProducts({ price: 5000 }).then(async (result) => {
   console.log(result);
-  try {
-    const detailedProducts = await fetchDetailedProducts(result.result);
-    console.log(detailedProducts);
-  } catch (error) {
-    console.error(
-      'Ошибка при получении детальной информации о продуктах:',
-      error
-    );
-  }
 });

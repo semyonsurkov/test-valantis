@@ -49,20 +49,26 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
         setProducts(fetchedProducts);
         setTotalPages(Math.ceil(totalProductsCount / 50));
         setLoading(false);
-        break; // Выходим из цикла, если запрос выполнен успешно
+        break;
       } catch (error) {
-        if (error.response && error.response.status === 500) {
+        const typedError = error as {
+          response?: { status: number };
+          message?: string;
+        };
+        if (typedError.response && typedError.response.status === 500) {
           console.error('Ошибка 500. Повторная попытка запроса...');
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // Пауза перед повторной попыткой
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         } else {
           console.error('Ошибка при загрузке товаров:', error);
           setError(
             'Ошибка при загрузке товаров. Пожалуйста, попробуйте еще раз.'
           );
-          break; // Выходим из цикла при других ошибках
+          break;
         }
       }
     }
+
+    console.log('fetchData called again');
   };
 
   useEffect(() => {
@@ -92,7 +98,7 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
           height: '100vh',
         }}
       >
-        <ClipLoader color="#007bff" size={80} />
+        <ClipLoader color="#007bff" size={160} />
       </div>
     );
   if (error) return <div>{error}</div>;

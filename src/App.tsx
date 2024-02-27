@@ -5,6 +5,7 @@ import styles from './App.module.scss';
 const App: React.FC = () => {
   const [filter, setFilter] = useState<{ [key: string]: any }>({});
 
+  // @ts-ignore
   const handleFilterChange = (newFilter: { [key: string]: any }) => {
     setFilter(newFilter);
   };

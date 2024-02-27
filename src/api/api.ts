@@ -2,6 +2,13 @@ import md5 from 'md5';
 const API_URL = 'http://api.valantis.store:40000/';
 const PASSWORD = 'Valantis';
 
+interface Product {
+  brand: string | null;
+  id: string;
+  price: number;
+  product: string;
+}
+
 const generateAuthHeader = (): string => {
   const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const authString = `${PASSWORD}_${timestamp}`;
@@ -39,7 +46,7 @@ export const fetchProducts = async (
 
 export const fetchDetailedProducts = async (ids: string[]) => {
   const authHeader = generateAuthHeader();
-  let result = [];
+  let result: Product[] = [];
 
   for (let i = 0; i < ids.length; i += 100) {
     const chunkIds = ids.slice(i, i + 100);
@@ -57,6 +64,7 @@ export const fetchDetailedProducts = async (ids: string[]) => {
 
     const response = await fetch(API_URL, requestOptions);
     const data = await handleResponse(response);
+    console.log(data);
     result = result.concat(data.result);
   }
 
@@ -87,8 +95,8 @@ export const filterProducts = async (filters: { [key: string]: any }) => {
 
     return detailedProducts;
   } catch (error) {
-    throw new Error('Ошибка при фильтрации продуктов: ' + error.message);
+    throw new Error(
+      'Ошибка при фильтрации продуктов: ' + (error as Error).message
+    );
   }
 };
-
-console.log(filterProducts({ brand: 'Van Cleef & Arpels' }));

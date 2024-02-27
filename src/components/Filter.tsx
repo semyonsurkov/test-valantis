@@ -25,7 +25,12 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
       ? parseFloat(filterValue)
       : filterValue;
 
+    console.log('Фильтруем по:', filterField);
+    console.log('Значение фильтра:', formattedValue);
+
     onFilterChange({ [filterField]: formattedValue });
+
+    console.log('Данные успешно отправлены!');
   };
 
   return (

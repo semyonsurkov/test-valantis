@@ -90,7 +90,3 @@ export const filterProducts = async (filters: { [key: string]: any }) => {
     throw new Error('Ошибка при фильтрации продуктов: ' + error.message);
   }
 };
-
-filterProducts({ price: 5000 }).then(async (result) => {
-  console.log(result);
-});

@@ -1,89 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import { fetchProducts, fetchDetailedProducts } from '../api';
+import { fetchDetailedProducts, fetchProducts, filterProducts } from '../api';
 import Pagination from './Pagination';
 
 interface ProductListProps {
-  filter: string;
-  currentPage: number;
-  onPageChange: (page: number) => void;
+  filter?: { [key: string]: any };
 }
 
-const ProductList: React.FC<ProductListProps> = ({
-  filter,
-  currentPage,
-  onPageChange,
-}) => {
+const ProductList: React.FC<ProductListProps> = ({ filter }) => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const pageSize = 50;
-        const totalData = await fetchProducts(1, Number.MAX_SAFE_INTEGER);
-        const totalProducts = totalData.result.length;
-        const totalPagesCalc = Math.ceil(totalProducts / pageSize);
-        setTotalPages(totalPagesCalc);
-
-        const currentPageData = await fetchProducts(currentPage, pageSize);
-        if (currentPageData.result && currentPageData.result.length > 0) {
-          const detailedData = await fetchDetailedProducts(
-            currentPageData.result
-          );
-
-          const uniqueProducts = detailedData.filter(
-            (product, index, self) =>
-              index === self.findIndex((p) => p.id === product.id)
-          );
-
-          setProducts(uniqueProducts);
+        let fetchedProducts;
+        if (!filter || Object.keys(filter).length === 0) {
+          const pageNumber = 1;
+          const pageSize = 50;
+          const productsData = await fetchProducts(pageNumber, pageSize);
+          const ids = productsData.result;
+          fetchedProducts = await fetchDetailedProducts(ids);
         } else {
-          setProducts([]);
+          fetchedProducts = await filterProducts(filter);
         }
+        setProducts(fetchedProducts);
       } catch (error) {
-        console.error('Error fetching products:', error);
-        if (error.message === 'HTTP error! status: 500') {
-          console.log('Retrying request...');
-          fetchData();
-          return;
-        }
-        setError('Failed to fetch products. Please try again later.');
+        console.error('Ошибка при загрузке продуктов:', error);
+        setError(
+          'Ошибка при загрузке продуктов. Пожалуйста, попробуйте еще раз.'
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [filter, currentPage]);
-
-  const handlePageChange = (page: number) => {
-    onPageChange(page);
-  };
+  }, [filter]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div>
-      <h1>Product List</h1>
+      <h1>Список продуктов</h1>
       <ul>
         {products.map((product: any) => (
           <li key={product.id}>
             <p>ID: {product.id}</p>
-            <p>Name: {product.product}</p> <p>Price: {product.price}</p>
-            <p>Brand: {product.brand}</p>
+            <p>Название: {product.product}</p>
+            <p>Цена: {product.price}</p>
+            <p>Бренд: {product.brand}</p>
           </li>
         ))}
       </ul>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
     </div>
   );
 };

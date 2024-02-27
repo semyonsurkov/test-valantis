@@ -64,7 +64,6 @@ export const fetchDetailedProducts = async (ids: string[]) => {
 
     const response = await fetch(API_URL, requestOptions);
     const data = await handleResponse(response);
-    console.log(data);
     result = result.concat(data.result);
   }
 

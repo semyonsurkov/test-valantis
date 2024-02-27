@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from './Pagination.module.scss';
 
 interface PaginationProps {
   currentPage: number;
@@ -21,6 +22,7 @@ const Pagination: React.FC<PaginationProps> = ({
     const page = Number(inputPage);
     if (page !== currentPage && page > 0 && page <= totalPages) {
       onPageChange(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -32,15 +34,21 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div>
-      <div>
+      <div className={styles.buttonsContainer}>
         <button
-          onClick={() => onPageChange(currentPage - 1)}
+          onClick={() => {
+            onPageChange(currentPage - 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
           disabled={currentPage === 1}
         >
           Предыдущая
         </button>
         <button
-          onClick={() => onPageChange(currentPage + 1)}
+          onClick={() => {
+            onPageChange(currentPage + 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
           disabled={currentPage === totalPages}
         >
           Следующая

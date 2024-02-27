@@ -1,7 +1,7 @@
-// App.tsx
 import React, { useState } from 'react';
-import ProductList from './components/ProductList';
-import Filter from './components/Filter';
+import ProductList from './components/ProductList/ProductList';
+import Filter from './components/Filter/Filter';
+import styles from './App.module.scss';
 
 const App: React.FC = () => {
   const [filter, setFilter] = useState<{ [key: string]: any }>({});
@@ -11,9 +11,11 @@ const App: React.FC = () => {
   };
 
   return (
-    <div>
-      <Filter onFilterChange={handleFilterChange} />
-      <ProductList filter={filter} />
+    <div className={styles.App}>
+      <div className={styles.productListContainer}>
+        <Filter onFilterChange={handleFilterChange} />
+        <ProductList filter={filter} />
+      </div>
     </div>
   );
 };

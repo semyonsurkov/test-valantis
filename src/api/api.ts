@@ -91,4 +91,4 @@ export const filterProducts = async (filters: { [key: string]: any }) => {
   }
 };
 
-console.log(filterProducts({ price: 50000 }));
+console.log(filterProducts({ brand: 'Van Cleef & Arpels' }));

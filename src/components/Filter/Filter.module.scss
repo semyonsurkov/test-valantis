@@ -1,46 +1,74 @@
+@import '/src/App.module.scss';
+
 .form-container {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  height: 10vh;
+  margin: 16px;
+}
 
+.input-field,
+select {
+  margin: 0px 5px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: $background-color-light;
+  flex: 1;
+  max-width: 200px;
+}
+
+.input-field:focus {
+  outline: none;
+  color: black;
+}
+
+.select {
+  background-color: $primary-color;
+}
+.select:active {
+  outline: none;
+}
+
+.button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: $primary-color;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+}
+
+.button:hover {
+  background-color: $secondary-color;
+}
+
+.button:active {
+  border-color: none;
+}
+
+.button:disabled {
+  background-color: $disabled-color;
+  cursor: not-allowed;
+}
+
+.filter {
+  background-color: $primary-color;
+  color: #fff;
+  padding: 8px 15px;
+}
+
+@media (max-width: 768px) {
   .input-field {
-    margin: 0px 10px;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-
-    &.select {
-      flex: 1;
-      max-width: 150px;
-    }
-
-    &.input {
-      flex: 2;
-      max-width: 200px;
-    }
+    flex: 100%;
+    margin-bottom: 10px;
   }
 
   .button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: #0056b3;
-    }
-
-    &:not(:last-child) {
-      margin-right: 10px;
-    }
+    flex: 100%;
   }
-}
-
-.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
 }

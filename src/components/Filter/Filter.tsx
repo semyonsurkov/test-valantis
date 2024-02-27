@@ -42,21 +42,19 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange, onClear }) => {
   return (
     <div className={styles['form-container']}>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="filterField">Выберите параметр</label>
         <select
           id="filterField"
           value={filterField}
           onChange={handleFieldChange}
-          className={`${styles['input-field']} ${styles['select']}`}
+          className={`${styles['select']}`}
         >
           <option value="" disabled hidden>
-            Параметр
+            Фильтр
           </option>
           <option value="product">Имя</option>
           <option value="price">Цена</option>
           <option value="brand">Бренд</option>
         </select>
-        <label htmlFor="filterValue">Введите значение</label>
         <input
           type="text"
           id="filterValue"
@@ -67,7 +65,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange, onClear }) => {
         />
         <button
           type="submit"
-          className={`${styles['button']} ${
+          className={`${styles['button']} ${styles['filter']} ${
             !filterField || !filterValue ? styles['disabled'] : ''
           }`}
           disabled={!filterField || !filterValue}

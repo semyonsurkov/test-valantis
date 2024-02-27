@@ -61,7 +61,7 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
         } else {
           console.error('Ошибка при загрузке товаров:', error);
           setError(
-            'Ошибка при загрузке товаров. Пожалуйста, попробуйте еще раз.'
+            'Ошибка при загрузке товаров. Пожалуйста, перезагрузите страницу.'
           );
           break;
         }
@@ -97,7 +97,7 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
           height: '100vh',
         }}
       >
-        <ClipLoader color="#007bff" size={160} />
+        <ClipLoader color="#25b6cf" size={160} />
       </div>
     );
   if (error) return <div>{error}</div>;
@@ -110,12 +110,12 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
           <ul className={styles.productList}>
             {products.map((product: any, index: number) => (
               <li key={index} className={styles.productItem}>
-                <p>ID: {product.id}</p>
-                <p className={styles.productName}>
-                  Название: {product.product}
+                <p className={styles.productName}>{product.product}</p>
+                <p className={styles.productPrice}>
+                  Цена: <span className={styles.price}>{product.price}</span>
                 </p>
-                <p>Цена: {product.price}</p>
-                <p>Бренд: {product.brand}</p>
+                <p className={styles.productId}>ID: {product.id}</p>
+                <p>{product.brand}</p>
               </li>
             ))}
           </ul>

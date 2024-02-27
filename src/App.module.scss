@@ -1,8 +1,16 @@
+$primary-color: #25b6cf;
+$secondary-color: #299eb3;
+$background-color-light: #f1f2ee;
+$background-color-dark: #fafbf6;
+$disabled-color: #ccc;
+$gray-color: #2a3530;
+
 .App {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   height: 100%;
+  color: $gray-color;
 }
 
 .ProductList {

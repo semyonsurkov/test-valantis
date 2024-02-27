@@ -1,5 +1,28 @@
+@import '/src/App.module.scss';
+
 .buttonsContainer {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.buttonsContainer button {
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  background-color: $primary-color;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 5px;
+  min-width: 10vw;
+
+  &:hover {
+    background-color: $secondary-color;
+  }
+
+  &:disabled {
+    background-color: $disabled-color;
+    cursor: not-allowed;
+  }
 }

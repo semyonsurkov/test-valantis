@@ -67,8 +67,6 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
         }
       }
     }
-
-    console.log('fetchData called again');
   };
 
   useEffect(() => {
@@ -80,6 +78,7 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
   };
 
   const handleFilterChange = (filterParams: { [key: string]: any }) => {
+    setCurrentPage(1);
     setFilter(filterParams);
   };
 

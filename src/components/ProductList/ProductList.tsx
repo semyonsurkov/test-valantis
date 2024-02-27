@@ -1,3 +1,4 @@
+// В ProductList
 import React, { useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import {
@@ -7,13 +8,14 @@ import {
 } from '../../api/api';
 import Pagination from '../Pagination/Pagination';
 import styles from './ProductList.module.scss';
+import Filter from '../Filter/Filter';
 
 interface ProductListProps {
   filter: { [key: string]: any };
   setFilter: (filter: { [key: string]: any }) => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ filter }) => {
+const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,12 +64,20 @@ const ProductList: React.FC<ProductListProps> = ({ filter }) => {
   };
 
   useEffect(() => {
-    setCurrentPage(1);
     fetchData();
   }, [filter, currentPage, retryCount]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handleFilterChange = (filterParams: { [key: string]: any }) => {
+    setFilter(filterParams);
+  };
+
+  const handleClearFilter = () => {
+    setCurrentPage(1);
+    setFilter({});
   };
 
   if (loading)
@@ -88,6 +98,7 @@ const ProductList: React.FC<ProductListProps> = ({ filter }) => {
 
   return (
     <div className={styles.productListContainer}>
+      <Filter onFilterChange={handleFilterChange} onClear={handleClearFilter} />
       {products.length > 0 ? (
         <React.Fragment>
           <ul className={styles.productList}>

@@ -3,9 +3,10 @@ import styles from './Filter.module.scss';
 
 interface FilterProps {
   onFilterChange: (filterParams: { [key: string]: any }) => void;
+  onClear: () => void;
 }
 
-const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
+const Filter: React.FC<FilterProps> = ({ onFilterChange, onClear }) => {
   const [filterField, setFilterField] = useState('');
   const [filterValue, setFilterValue] = useState('');
 
@@ -35,7 +36,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
   const handleClear = () => {
     setFilterField('');
     setFilterValue('');
-    onFilterChange({});
+    onClear();
   };
 
   return (

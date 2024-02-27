@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import ProductList from './components/ProductList/ProductList';
-import Filter from './components/Filter/Filter';
 import styles from './App.module.scss';
 
 const App: React.FC = () => {
@@ -13,7 +12,6 @@ const App: React.FC = () => {
   return (
     <div className={styles.App}>
       <div className={styles.productListContainer}>
-        <Filter onFilterChange={handleFilterChange} />
         <ProductList filter={filter} setFilter={setFilter} />
       </div>
     </div>

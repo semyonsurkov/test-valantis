@@ -32,12 +32,16 @@ const Pagination: React.FC<PaginationProps> = ({
     }
   };
 
+  console.log(currentPage);
   return (
     <div>
       <div className={styles.buttonsContainer}>
         <button
           onClick={() => {
             onPageChange(currentPage - 1);
+            {
+              console.log(currentPage);
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           disabled={currentPage === 1}

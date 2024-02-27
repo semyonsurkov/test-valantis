@@ -71,7 +71,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
           }`}
           disabled={!filterField || !filterValue}
         >
-          Filter
+          Фильтровать
         </button>
 
         <button

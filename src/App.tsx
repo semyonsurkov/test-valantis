@@ -14,7 +14,7 @@ const App: React.FC = () => {
     <div className={styles.App}>
       <div className={styles.productListContainer}>
         <Filter onFilterChange={handleFilterChange} />
-        <ProductList filter={filter} />
+        <ProductList filter={filter} setFilter={setFilter} />
       </div>
     </div>
   );

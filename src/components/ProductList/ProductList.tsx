@@ -8,10 +8,12 @@ import {
 import Pagination from '../Pagination/Pagination';
 import styles from './ProductList.module.scss';
 
-const ProductList: React.FC<ProductListProps & { filterVersion: number }> = ({
-  filter,
-  filterVersion,
-}) => {
+interface ProductListProps {
+  filter: { [key: string]: any };
+  setFilter: (filter: { [key: string]: any }) => void;
+}
+
+const ProductList: React.FC<ProductListProps> = ({ filter }) => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,8 +21,7 @@ const ProductList: React.FC<ProductListProps & { filterVersion: number }> = ({
   const [totalPages, setTotalPages] = useState<number>(1);
   const [filterError, setFilterError] = useState<boolean>(false);
   const [retryCount, setRetryCount] = useState<number>(0);
-  const [retryInterval, setRetryInterval] = useState<number>(3000);
-  const [cachedData, setCachedData] = useState<any[]>([]);
+  const [retryInterval] = useState<number>(3000);
 
   const fetchData = async () => {
     setLoading(true);
@@ -30,12 +31,6 @@ const ProductList: React.FC<ProductListProps & { filterVersion: number }> = ({
       let totalProductsCount = 0;
 
       if (!filter || Object.keys(filter).length === 0) {
-        if (cachedData.length > 0 && currentPage === 1) {
-          setProducts(cachedData);
-          setLoading(false);
-          return;
-        }
-
         const pageNumber = currentPage;
         const pageSize = 50;
         const productsData = await fetchProducts(pageNumber, pageSize);
@@ -56,9 +51,6 @@ const ProductList: React.FC<ProductListProps & { filterVersion: number }> = ({
       setTotalPages(Math.ceil(totalProductsCount / 50));
       setLoading(false);
       setRetryCount(0);
-      if (currentPage === 1) {
-        setCachedData(fetchedProducts);
-      }
     } catch (error) {
       console.error('Ошибка при загрузке продуктов:', error);
       setError(
@@ -70,8 +62,10 @@ const ProductList: React.FC<ProductListProps & { filterVersion: number }> = ({
   };
 
   useEffect(() => {
+    setCurrentPage(1);
     fetchData();
   }, [filter, currentPage, retryCount]);
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };

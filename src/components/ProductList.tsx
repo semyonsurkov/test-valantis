@@ -1,3 +1,4 @@
+// src/components/ProductList.tsx
 import React, { useState, useEffect } from 'react';
 import { fetchDetailedProducts, fetchProducts, filterProducts } from '../api';
 import Pagination from './Pagination';
@@ -10,35 +11,51 @@ const ProductList: React.FC<ProductListProps> = ({ filter }) => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      let fetchedProducts;
+      let totalProductsCount = 0;
+
+      if (!filter || Object.keys(filter).length === 0) {
+        const pageNumber = currentPage;
+        const pageSize = 50;
+        const productsData = await fetchProducts(pageNumber, pageSize);
+        totalProductsCount = productsData.totalCount;
+        const ids = productsData.result;
+        fetchedProducts = await fetchDetailedProducts(ids);
+      } else {
+        const filteredProducts = await filterProducts(filter);
+        totalProductsCount = filteredProducts.length;
+        fetchedProducts = filteredProducts.slice(
+          (currentPage - 1) * 50,
+          currentPage * 50
+        );
+      }
+
+      setProducts(fetchedProducts);
+      setTotalPages(Math.ceil(totalProductsCount / 50));
+      setLoading(false);
+    } catch (error) {
+      console.error('Ошибка при загрузке продуктов:', error);
+      setError(
+        'Ошибка при загрузке продуктов. Пожалуйста, попробуйте еще раз.'
+      );
+      setTimeout(fetchData, 1000);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        let fetchedProducts;
-        if (!filter || Object.keys(filter).length === 0) {
-          const pageNumber = 1;
-          const pageSize = 50;
-          const productsData = await fetchProducts(pageNumber, pageSize);
-          const ids = productsData.result;
-          fetchedProducts = await fetchDetailedProducts(ids);
-        } else {
-          fetchedProducts = await filterProducts(filter);
-        }
-        setProducts(fetchedProducts);
-      } catch (error) {
-        console.error('Ошибка при загрузке продуктов:', error);
-        setError(
-          'Ошибка при загрузке продуктов. Пожалуйста, попробуйте еще раз.'
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, [filter]);
+  }, [filter, currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -56,6 +73,11 @@ const ProductList: React.FC<ProductListProps> = ({ filter }) => {
           </li>
         ))}
       </ul>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

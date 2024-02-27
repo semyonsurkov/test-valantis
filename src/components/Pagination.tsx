@@ -33,37 +33,17 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div>
       <div>
-        Страница {currentPage} из {totalPages}
-      </div>
-      <div>
-        <button onClick={() => onPageChange(1)} disabled={currentPage === 1}>
-          Первая
-        </button>
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Предыдущая
         </button>
-        <input
-          type="number"
-          value={inputPage}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          style={{ width: '50px' }}
-        />
-        <button onClick={handleGoClick}>Перейти</button>
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
           Следующая
-        </button>
-        <button
-          onClick={() => onPageChange(totalPages)}
-          disabled={currentPage === totalPages}
-        >
-          Последняя
         </button>
       </div>
     </div>

@@ -1,4 +1,3 @@
-// В ProductList
 import React, { useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import {
@@ -21,51 +20,54 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [filterError, setFilterError] = useState<boolean>(false);
-  const [retryCount, setRetryCount] = useState<number>(0);
-  const [retryInterval] = useState<number>(3000);
 
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-    try {
-      let fetchedProducts;
-      let totalProductsCount = 0;
 
-      if (!filter || Object.keys(filter).length === 0) {
-        const pageNumber = currentPage;
-        const pageSize = 50;
-        const productsData = await fetchProducts(pageNumber, pageSize);
-        totalProductsCount = productsData.totalCount;
-        const ids = productsData.result;
-        fetchedProducts = await fetchDetailedProducts(ids);
-      } else {
-        const filteredProducts = await filterProducts(filter);
-        totalProductsCount = filteredProducts.length;
-        fetchedProducts = filteredProducts.slice(
-          (currentPage - 1) * 50,
-          currentPage * 50
-        );
-        setFilterError(false);
+    while (true) {
+      try {
+        let fetchedProducts;
+        let totalProductsCount = 0;
+
+        if (!filter || Object.keys(filter).length === 0) {
+          const pageNumber = currentPage;
+          const pageSize = 50;
+          const productsData = await fetchProducts(pageNumber, pageSize);
+          totalProductsCount = productsData.totalCount;
+          const ids = productsData.result;
+          fetchedProducts = await fetchDetailedProducts(ids);
+        } else {
+          const filteredProducts = await filterProducts(filter);
+          totalProductsCount = filteredProducts.length;
+          fetchedProducts = filteredProducts.slice(
+            (currentPage - 1) * 50,
+            currentPage * 50
+          );
+        }
+
+        setProducts(fetchedProducts);
+        setTotalPages(Math.ceil(totalProductsCount / 50));
+        setLoading(false);
+        break; // Выходим из цикла, если запрос выполнен успешно
+      } catch (error) {
+        if (error.response && error.response.status === 500) {
+          console.error('Ошибка 500. Повторная попытка запроса...');
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Пауза перед повторной попыткой
+        } else {
+          console.error('Ошибка при загрузке товаров:', error);
+          setError(
+            'Ошибка при загрузке товаров. Пожалуйста, попробуйте еще раз.'
+          );
+          break; // Выходим из цикла при других ошибках
+        }
       }
-
-      setProducts(fetchedProducts);
-      setTotalPages(Math.ceil(totalProductsCount / 50));
-      setLoading(false);
-      setRetryCount(0);
-    } catch (error) {
-      console.error('Ошибка при загрузке продуктов:', error);
-      setError(
-        'Ошибка при загрузке продуктов. Пожалуйста, попробуйте еще раз.'
-      );
-      setTimeout(fetchData, retryInterval);
-      setRetryCount(retryCount + 1);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, [filter, currentPage, retryCount]);
+  }, [filter, currentPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -94,7 +96,6 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
       </div>
     );
   if (error) return <div>{error}</div>;
-  if (filterError) return <div>Товары по данному фильтру не найдены.</div>;
 
   return (
     <div className={styles.productListContainer}>
@@ -102,8 +103,8 @@ const ProductList: React.FC<ProductListProps> = ({ filter, setFilter }) => {
       {products.length > 0 ? (
         <React.Fragment>
           <ul className={styles.productList}>
-            {products.map((product: any) => (
-              <li key={product.id} className={styles.productItem}>
+            {products.map((product: any, index: number) => (
+              <li key={index} className={styles.productItem}>
                 <p>ID: {product.id}</p>
                 <p className={styles.productName}>
                   Название: {product.product}

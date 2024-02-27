@@ -80,7 +80,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange, onClear }) => {
           onClick={handleClear}
           className={styles['button']}
         >
-          Очистить
+          Сбросить запрос
         </button>
       </form>
     </div>

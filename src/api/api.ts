@@ -11,9 +11,23 @@ const generateAuthHeader = (): string => {
 
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
+    console.error(`HTTP error! status: ${response.status}`);
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   return await response.json();
+};
+
+const fetchWithRetry = async (requestOptions: RequestInit) => {
+  let response;
+  try {
+    response = await fetch(API_URL, requestOptions);
+    return await handleResponse(response);
+  } catch (error) {
+    console.error('Error occurred:', error);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    response = await fetch(API_URL, requestOptions);
+    return await handleResponse(response);
+  }
 };
 
 export const fetchProducts = async (
@@ -34,8 +48,7 @@ export const fetchProducts = async (
     }),
   };
 
-  const response = await fetch(API_URL, requestOptions);
-  return handleResponse(response);
+  return await fetchWithRetry(requestOptions);
 };
 
 export const fetchDetailedProducts = async (ids: string[]) => {
@@ -52,8 +65,7 @@ export const fetchDetailedProducts = async (ids: string[]) => {
     }),
   };
 
-  const response = await fetch(API_URL, requestOptions);
-  const data = await handleResponse(response);
+  const data = await fetchWithRetry(requestOptions);
   return data.result;
 };
 
@@ -71,8 +83,6 @@ export const filterProducts = async (filters: { [key: string]: any }) => {
     }),
   };
 
-  const response = await fetch(API_URL, requestOptions);
-  const filteredProducts = await handleResponse(response);
-
+  const filteredProducts = await fetchWithRetry(requestOptions);
   return fetchDetailedProducts(filteredProducts.result);
 };
